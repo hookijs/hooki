@@ -1,22 +1,33 @@
-import { createParams, omit, nameFunctions, isClass } from './helpers';
+import { createParams, omit, nameFunctions, is } from './helpers';
+
+const hookType = {
+  class: Symbol('classHook'),
+  object: Symbol('objectHook'),
+  func: Symbol('functionHook')
+};
 
 export default class Hooki {
 
   constructor(target, before = {}, after = {}) {
-    if (isClass(target)) {
-      this.Class = target;
-    } else {
-      this.target = target;
-    }
-    this.handler = {};
-    this.current = {};
     this.hooks = {
       before: nameFunctions(before),
       after: nameFunctions(after)
     };
+    this.current = {};
 
-    if (this.Class) return this.decorateClass();
-    return this.invokeFunction();
+    if (is.class(target)) {
+      this.Class = target;
+      this.type = hookType.class;
+      return this.invokeClass();
+    }
+
+    if (is.object(target)) {
+      this.target = target;
+      this.type = hookType.object;
+      return this.invokeFunction();
+    }
+
+    throw new Error('Hooki: target must be object, function or class');
   }
 
   setCurrent(name, type, action) {
@@ -124,19 +135,18 @@ export default class Hooki {
     };
   }
 
-  traceCalls() {
+  createTraps() {
     const self = this;
 
-    this.handler = {
-      get(target, propKey) {
+    return {
 
+      get(target, propKey) {
         const descriptor = Reflect.getOwnPropertyDescriptor(target, propKey);
 
         if (descriptor === undefined || descriptor === null) return undefined;
 
         if (descriptor.get) {
           const func = (value) => { return value(); };
-
           self.setCurrent(propKey, 'get', 'getter');
           return self.decorateFunction(descriptor.get)(func);
         }
@@ -144,7 +154,6 @@ export default class Hooki {
         if (typeof descriptor.value === 'function') {
           self.setCurrent(propKey, 'get', 'function');
           const func = target[propKey];
-
           return self.decorateFunction(func);
         }
 
@@ -154,6 +163,7 @@ export default class Hooki {
         return self.decorateFunction(func)(target[propKey]);
 
       },
+
       set(target, propKey, _value) {
         self.setCurrent(propKey, 'set');
         const descriptor = Reflect.getOwnPropertyDescriptor(target, propKey);
@@ -176,22 +186,23 @@ export default class Hooki {
     };
   }
 
-  invokeFunction() {
-    this.traceCalls();
-    this.proxy = new Proxy(this.target, this.handler);
+  createProxy(target) {
+    this.proxy = new Proxy(this.target, this.createTraps());
     return this.proxy;
   }
 
-  decorateClass() {
+  invokeFunction() {
+    return this.createProxy(this.target);
+  }
+
+  invokeClass() {
     const self = this;
 
     return class {
 
       constructor(...args) {
         self.target = new self.Class(...args);
-        self.traceCalls();
-        self.proxy = new Proxy(self.target, self.handler);
-        return self.proxy;
+        return self.createProxy(self.target);
       }
 
       static [Symbol.hasInstance](operand) {

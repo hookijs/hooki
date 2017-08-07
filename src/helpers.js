@@ -55,7 +55,7 @@ export const nameFunctions = (hooks) => {
     }, {});
 };
 
-/* isClass */
+// Type Check
 
 const toString = Function.prototype.toString;
 
@@ -68,4 +68,13 @@ export const isClass = (fn) => {
           (/^class\s/.test(toString.call(fn)) ||
             (/classCallCheck\(/.test(fnBody(fn)))) // babel.js
           );
+};
+
+const isObject = (item) => {
+  return (typeof item === "object" && !Array.isArray(item) && item !== null);
+};
+
+export const is = {
+  class: isClass,
+  object: isObject
 };
