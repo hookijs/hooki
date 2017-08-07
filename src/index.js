@@ -1,10 +1,18 @@
 import { createParams, omit, nameFunctions, is } from './helpers';
 
-const hookType = {
+const HookTypes = {
   class: Symbol('classHook'),
   object: Symbol('objectHook'),
   func: Symbol('functionHook')
 };
+
+const ActionTypes = {
+  Func: Symbol('funcAction'),
+  Get: Symbol('getAction'),
+  Set: Symbol('setAction'),
+  Getter: Symbol('getterAction'),
+  Setter: Symbol('setterAction')
+}
 
 export default class Hooki {
 
@@ -17,13 +25,13 @@ export default class Hooki {
 
     if (is.class(target)) {
       this.Class = target;
-      this.type = hookType.class;
+      this.type = HookTypes.class;
       return this.invokeClass();
     }
 
     if (is.object(target)) {
       this.target = target;
-      this.type = hookType.object;
+      this.type = HookTypes.object;
       return this.invokeFunction();
     }
 
@@ -41,7 +49,7 @@ export default class Hooki {
       const name = this.current.name;
 
       switch (action) {
-        case 'function':
+        case ActionTypes.Func:
           return {
             name, action, params,
             stash: { args, params },
@@ -50,14 +58,14 @@ export default class Hooki {
               return Object.values(this.params);
             }
           };
-        case 'set':
+        case ActionTypes.Set:
           return {
             name, action,
             value: params.value,
             stash: { value: params.value },
             self: this.target
           };
-        case 'setter':
+        case ActionTypes.Setter:
           return {
             name, action, params,
             stash: { args, params },
@@ -66,14 +74,14 @@ export default class Hooki {
               return Object.values(this.params);
             }
           };
-        case 'get':
+        case ActionTypes.Get:
           return {
             name, action,
             value: params.value,
             stash: { value: params.value },
             self: this.target
           };
-        case 'getter':
+        case ActionTypes.Getter:
           return { name, action };
         default:
           throw new Error(`Action ${action} do not exists!`);
@@ -105,10 +113,10 @@ export default class Hooki {
     return (data) => {
       let args;
 
-      if (this.current.action === 'function') {
+      if (this.current.action === ActionTypes.Func) {
         args = data.args;
       }
-      if (this.current.action === 'get' || this.current.action === 'set') {
+      if (this.current.action === ActionTypes.Get || this.current.action === ActionTypes.Set) {
         args = [data.value];
       }
       const result = func.apply(this.target, args);
@@ -147,17 +155,17 @@ export default class Hooki {
 
         if (descriptor.get) {
           const func = (value) => { return value(); };
-          self.setCurrent(propKey, 'get', 'getter');
+          self.setCurrent(propKey, 'get', ActionTypes.Getter);
           return self.decorateFunction(descriptor.get)(func);
         }
 
         if (typeof descriptor.value === 'function') {
-          self.setCurrent(propKey, 'get', 'function');
+          self.setCurrent(propKey, 'get', ActionTypes.Func);
           const func = target[propKey];
           return self.decorateFunction(func);
         }
 
-        self.setCurrent(propKey, 'get', 'get');
+        self.setCurrent(propKey, 'get', ActionTypes.Get);
         function func(value) { return value; } // TODO: change to arrow function
 
         return self.decorateFunction(func)(target[propKey]);
@@ -169,12 +177,12 @@ export default class Hooki {
         const descriptor = Reflect.getOwnPropertyDescriptor(target, propKey);
 
         if (descriptor.set) {
-          self.setCurrent(propKey, 'set', 'setter');
+          self.setCurrent(propKey, 'set', ActionTypes.Setter);
           self.decorateFunction(descriptor.set)(_value);
           return true;
         }
 
-        self.setCurrent(propKey, 'set', 'set');
+        self.setCurrent(propKey, 'set', ActionTypes.Set);
         function func(value) {
           target[propKey] = value;
           return true;

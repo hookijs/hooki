@@ -11,7 +11,7 @@ let product = {
   }
 };
 
-const $product = new Hooki(product, before, after).invoke();
+const $product = new Hooki(product, before, after);
 
 // $product;
 $product.buy(20);
