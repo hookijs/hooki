@@ -38,9 +38,13 @@ export default class Hooki {
     throw new Error('Hooki: target must be object, function or class');
   }
 
+
+
   setCurrent(name, type, action) {
     this.current = { name, type, action };
   }
+
+
 
   createContextData(func) {
     return (args) => {
@@ -89,6 +93,8 @@ export default class Hooki {
     };
   }
 
+
+
   applyHook(contextData, hook) {
     contextData.hookName = hook.name;
     const result = hook(contextData);
@@ -99,6 +105,8 @@ export default class Hooki {
     return Object.assign(contextData, omit(result, ...keysToOmit));
   }
 
+
+
   processHooks(type) {
     return (data) => {
       const contextData = Object.assign(data, { type });
@@ -108,6 +116,8 @@ export default class Hooki {
       return hooks.reduce(this.applyHook, contextData);
     };
   }
+
+
 
   applyOriginalFunction(func) {
     return (data) => {
@@ -129,10 +139,12 @@ export default class Hooki {
     };
   }
 
+
+
   decorateFunction(func) {
     const self = this;
 
-    return function (...args) {
+    return (...args) => {
       const [contextData] = [args]
         .map(self.createContextData(func))
         .map(self.processHooks('before'))
@@ -142,6 +154,8 @@ export default class Hooki {
       return contextData.result;
     };
   }
+
+
 
   createTraps() {
     const self = this;
@@ -194,14 +208,20 @@ export default class Hooki {
     };
   }
 
+
+
   createProxy(target) {
     this.proxy = new Proxy(this.target, this.createTraps());
     return this.proxy;
   }
 
+
+
   invokeFunction() {
     return this.createProxy(this.target);
   }
+
+
 
   invokeClass() {
     const self = this;
