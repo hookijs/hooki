@@ -1,8 +1,8 @@
 {
-  "name": "webpack-library-starter",
+  "name": "hooki",
   "version": "0.3.0",
-  "description": "Produce universal library with webpack and es6",
-  "main": "lib/library.js",
+  "description": "An advanced Javascript hook system.",
+  "main": "src/index.js",
   "scripts": {
     "build": "webpack --env build",
     "dev": "webpack --progress --colors --watch --env dev",
@@ -25,21 +25,20 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/krasimir/webpack-library-starter.git"
+    "url": "https://github.com/hookijs/hooki.git"
   },
   "keywords": [
-    "webpack",
-    "es6",
-    "starter",
-    "library",
-    "universal",
-    "umd",
-    "commonjs"
+    "hook",
+    "hooks",
+    "middleware",
+    "functions",
+    "events",
+    "lifecycle"
   ],
-  "author": "Krasimir Tsonev",
+  "author": "Russian Rebouças",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/krasimir/webpack-library-starter/issues"
+    "url": "https://github.com/hookijs/hooki/issues"
   },
-  "homepage": "https://github.com/krasimir/webpack-library-starter"
+  "homepage": "https://github.com/hookijs/hooki"
 }
