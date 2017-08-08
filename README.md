@@ -2,6 +2,12 @@
 <a align="center" href="https://github.com/russiann/hooki"><img width="100%" src="https://cdn.pbrd.co/images/GECTIQj.png" alt="Hooki Logo"></a>
 > ⚓️  An advanced Javascript hook system.
 
+## Installation
+
+```
+npm install hooki --save
+```
+
 ## Usage
 
 ```js
