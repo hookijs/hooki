@@ -12,7 +12,7 @@ const ActionTypes = {
   Set: Symbol('setAction'),
   Getter: Symbol('getterAction'),
   Setter: Symbol('setterAction')
-}
+};
 
 export default class Hooki {
 

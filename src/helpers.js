@@ -29,17 +29,6 @@ export const omit = (obj, ...items) => {
   }, {});
 };
 
-export const pick = (obj, ...items) => {
-  return Object.keys(obj).reduce((data, key) =>{
-    const toPick = items.find(i => i === key);
-
-    if (toPick) {
-      data[key] = obj[key];
-    }
-    return data;
-  }, {});
-};
-
 export const nameFunctions = (hooks) => {
   return Object
     .keys(hooks)
@@ -63,7 +52,7 @@ const fnBody = (fn) => {
   return toString.call(fn).replace(/^[^{]*{\s*/, '').replace(/\s*}[^}]*$/, '');
 };
 
-export const isClass = (fn) => {
+const isClass = (fn) => {
   return (typeof fn === 'function' &&
           (/^class\s/.test(toString.call(fn)) ||
             (/classCallCheck\(/.test(fnBody(fn)))) // babel.js
@@ -71,7 +60,7 @@ export const isClass = (fn) => {
 };
 
 const isObject = (item) => {
-  return (typeof item === "object" && !Array.isArray(item) && item !== null);
+  return (typeof item === 'object' && !Array.isArray(item) && item !== null);
 };
 
 export const is = {

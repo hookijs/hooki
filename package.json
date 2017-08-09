@@ -1,6 +1,6 @@
 {
   "name": "hooki",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "An advanced Javascript hook system.",
   "main": "src/index.js",
   "scripts": {
