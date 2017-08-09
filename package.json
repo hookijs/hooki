@@ -2,7 +2,7 @@
   "name": "hooki",
   "version": "0.3.1",
   "description": "An advanced Javascript hook system.",
-  "main": "src/index.js",
+  "main": "lib/library.js",
   "scripts": {
     "build": "webpack --env build",
     "dev": "webpack --progress --colors --watch --env dev",
