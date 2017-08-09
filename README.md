@@ -76,6 +76,9 @@ bag.buy(2);
 
 ## Roadmap
 
+#### Tests
+- [ ] tests
+
 #### target types
 - [x] object
 - [x] class
@@ -87,7 +90,7 @@ bag.buy(2);
 - [x] set
 - [x] getter
 - [x] setter
-- [ ] contruct
+- [x] construct
 
 #### hook types
 - [x] after
@@ -104,3 +107,4 @@ bag.buy(2);
 - [ ] hooki-validator
 - [ ] hooki-errors
 - [ ] hooki-lifecycle
+- [ ] hooki-modules
