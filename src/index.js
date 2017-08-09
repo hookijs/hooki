@@ -47,18 +47,6 @@ export default class Hooki {
 
 
 
-  defineArgsProperty(obj) {
-    Object.defineProperty(obj, 'args', {
-      configurable: false,
-      get: function () {
-        console.log('getter fired!', Object.values(this.params));
-        return Object.values(this.params);
-      },
-    });
-  }
-
-
-
   createContextData(func) {
     return (args) => {
       const params = createParams(func, args);
@@ -122,7 +110,7 @@ export default class Hooki {
           throw new Error(`Action ${action} do not exists!`);
 
       }
-      // this.defineArgsProperty(contextData);
+
       return contextData;
     };
   }
