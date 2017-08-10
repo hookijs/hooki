@@ -1,8 +1,8 @@
 {
   "name": "hooki",
-  "version": "0.3.2",
+  "version": "0.4.0",
   "description": "An advanced Javascript hook system.",
-  "main": "lib/library.min.js",
+  "main": "lib/Hooki.min.js",
   "scripts": {
     "build": "webpack --env build",
     "dev": "webpack --progress --colors --watch --env dev",
@@ -35,7 +35,10 @@
     "middleware",
     "functions",
     "events",
-    "lifecycle"
+    "lifecycle",
+    "aspected-oriented",
+    "metaprogramming",
+    "proxy"
   ],
   "author": "Russian Rebouças",
   "license": "MIT",

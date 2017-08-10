@@ -37,9 +37,9 @@ export const nameFunctions = (hooks) => {
     return obj;
   };
   return Object
-    .keys(hooks) /*? hooks*/
+    .keys(hooks)
     .reduce((data, key) => {
-      data[key] = flatFuncs(hooks[key]) /*? hooks[key]*/
+      data[key] = flatFuncs(hooks[key])
         .map((fn, index) => {
           if (fn && !fn.name) {
             Object.defineProperty(fn, 'name', { value: `hook-${ index + 1 }` });
@@ -83,7 +83,7 @@ export const validateHooks = (...bundle) => {
     }
 
     for (const key of Object.keys(hooks)) {
-      const property = hooks[key]; /*?*/
+      const property = hooks[key];
       if (is.object(property)) {
         return true;
       } else if (Array.isArray(property)) {
@@ -97,5 +97,6 @@ export const validateHooks = (...bundle) => {
 
       throw new Error('Hooki: invalid schema for bundle hooks!');
     }
+    return true;
   });
 };

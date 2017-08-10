@@ -285,7 +285,7 @@ export default class Hooki {
 
         return this.createProxy(this.target);
       }
-    })
+    });
   }
 
 };
