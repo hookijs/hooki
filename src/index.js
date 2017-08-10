@@ -1,4 +1,4 @@
-import { createParams, omit, nameFunctions, is } from './helpers';
+import { createParams, omit, nameFunctions, is, validateHooks } from './helpers';
 
 export const HookTypes = {
   class: Symbol('classHook'),
@@ -18,6 +18,8 @@ export const ActionTypes = {
 export default class Hooki {
 
   constructor(target, before = {}, after = {}) {
+    if (!target) throw new Error('Hooki: target param is required');
+    validateHooks(before, after);
     this.hooks = {
       before: nameFunctions(before),
       after: nameFunctions(after)

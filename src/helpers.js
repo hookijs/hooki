@@ -30,10 +30,16 @@ export const omit = (obj, ...items) => {
 };
 
 export const nameFunctions = (hooks) => {
+  const flatFuncs = (obj) => {
+    if (typeof obj === 'object' && !Array.isArray(obj)) {
+      return Object.keys(obj).map(key => obj[key]);
+    }
+    return obj;
+  };
   return Object
-    .keys(hooks)
+    .keys(hooks) /*? hooks*/
     .reduce((data, key) => {
-      data[key] = hooks[key]
+      data[key] = flatFuncs(hooks[key]) /*? hooks[key]*/
         .map((fn, index) => {
           if (fn && !fn.name) {
             Object.defineProperty(fn, 'name', { value: `hook-${ index + 1 }` });
@@ -66,4 +72,30 @@ const isObject = (item) => {
 export const is = {
   class: isClass,
   object: isObject
+};
+
+// hook validation
+
+export const validateHooks = (...bundle) => {
+  bundle.forEach(hooks => {
+    if (!is.object(hooks)) {
+      throw new Error('Hooki: bundle hooks must be an object');
+    }
+
+    for (const key of Object.keys(hooks)) {
+      const property = hooks[key]; /*?*/
+      if (is.object(property)) {
+        return true;
+      } else if (Array.isArray(property)) {
+        property.forEach(item => {
+          if (!typeof item === 'function') {
+            throw new Error('Hooki: hook must be a function!');
+          }
+        });
+        return true;
+      }
+
+      throw new Error('Hooki: invalid schema for bundle hooks!');
+    }
+  });
 };
