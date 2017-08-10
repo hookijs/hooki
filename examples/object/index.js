@@ -1,5 +1,5 @@
 import Hooki from '../../src/index';
-import { before, after } from './hooks';
+import { before, after, error } from './hooks';
 
 let product = {
   name: 'Bag',
@@ -11,7 +11,7 @@ let product = {
   }
 };
 
-const $product = new Hooki(product, before, after);
+const $product = new Hooki(product, before, after, error);
 
 // $product;
 $product.buy(20);

@@ -8,6 +8,12 @@ const verifyStock = (context) => {
 
 const decrementStock = (context) => {
   context.self.stock -= context.params.quantity;
+  // throw new Error('Fooo');
+  return context;
+};
+
+const exampleHook = (context) => {
+  console.log('error', context);
   return context;
 };
 
@@ -17,4 +23,8 @@ export const before = {
 
 export const after = {
   buy: [decrementStock]
+};
+
+export const error = {
+  buy: [exampleHook]
 };

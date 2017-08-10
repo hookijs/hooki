@@ -77,7 +77,7 @@ bag.buy(2);
 ## Roadmap
 
 #### Tests
-- [ ] tests
+- [x] tests
 
 #### target types
 - [x] object
@@ -95,7 +95,7 @@ bag.buy(2);
 #### hook types
 - [x] after
 - [x] before
-- [ ] errors
+- [x] errors
 
 #### features
 - [ ] plugin system

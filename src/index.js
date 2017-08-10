@@ -17,12 +17,13 @@ export const ActionTypes = {
 
 export default class Hooki {
 
-  constructor(target, before = {}, after = {}) {
+  constructor(target, before = {}, after = {}, error = {}) {
     if (!target) throw new Error('Hooki: target param is required');
-    validateHooks(before, after);
+    validateHooks(before, after, error);
     this.hooks = {
       before: nameFunctions(before),
-      after: nameFunctions(after)
+      after: nameFunctions(after),
+      error: nameFunctions(error)
     };
     this.current = {};
 
@@ -35,7 +36,7 @@ export default class Hooki {
     if (is.object(target)) {
       this.target = target;
       this.type = HookTypes.object;
-      return this.invokeFunction();
+      return this.invokeObject();
     }
 
     throw new Error('Hooki: target must be object, function or class');
@@ -120,9 +121,20 @@ export default class Hooki {
 
 
   applyHook(contextData, hook) {
+
+    if (contextData.error && contextData.type !== 'error') return contextData;
+
     contextData.hookName = hook.name;
-    const result = hook(contextData);
-    const keysToOmit = ['args', 'stash', 'value', 'action', 'hookName', 'type', 'instance'];
+    let result;
+
+    try {
+      result = hook(contextData);
+    } catch (error) {
+      const data = Object.assign(contextData, { error });
+      return this.processHooks('error')(data);
+    }
+
+    const keysToOmit = ['args', 'stash', 'value', 'action', 'hookName', 'type', 'instance', 'error'];
 
     if (result === undefined || result === null) throw Error(`'${hook.name}' hook must return context data`);
 
@@ -136,8 +148,7 @@ export default class Hooki {
       const contextData = Object.assign(data, { type });
       const currentName = this.current.name;
       const hooks = this.hooks[type][currentName] || [];
-
-      return hooks.reduce(this.applyHook, contextData);
+      return hooks.reduce(this.applyHook.bind(this), contextData);
     };
   }
 
@@ -255,7 +266,7 @@ export default class Hooki {
 
 
 
-  invokeFunction() {
+  invokeObject() {
     return this.createProxy(this.target);
   }
 
